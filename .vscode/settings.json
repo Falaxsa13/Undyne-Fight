@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "compare": "c",
+        "cstddef": "c",
+        "limits": "c",
+        "type_traits": "c",
+        "xmemory": "c",
+        "xstring": "c",
+        "xutility": "c",
+        "iosfwd": "c",
+        "maincharacter.h": "c",
+        "bulldog.h": "c"
+    }
+}
