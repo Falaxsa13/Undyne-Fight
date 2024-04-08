@@ -1,5 +1,17 @@
 #include "include/main.h"
+#include "include/gameStateHandlers.h"
 
+/**
+ * @brief Updates the player's health based on collisions with bullets.
+ *
+ * This function iterates through the bullets array and checks for collisions between
+ * the player and each bullet. If a collision is detected and the bullet does not collide
+ * with the shield, the player's health is reduced by 10 and the bullet is removed from
+ * the screen.
+ *
+ * @param p Pointer to the player object.
+ * @param shield Pointer to the shield object.
+ */
 void updateHealth(Player *p, Shield *shield)
 {
   for (int i = 0; i < MAX_BULLETS; i++)
@@ -15,6 +27,17 @@ void updateHealth(Player *p, Shield *shield)
   }
 }
 
+/**
+ * @brief Draws the health bar on the screen representing the player's current health.
+ *
+ * This function draws a health bar on the screen to visually represent the player's current
+ * health. If the player's health is greater than 0, the function calculates the width of the
+ * health bar based on the player's current health compared to their maximum health. The health
+ * bar is then drawn using two rectangles: one for the background (representing the total health)
+ * and another for the current health (filled in a different color).
+ *
+ * @param p Pointer to the player object.
+ */
 void drawHealthBar(Player *p)
 {
   if (p->health > 0)
@@ -30,164 +53,42 @@ int main(void)
 
   REG_DISPCNT = MODE3 | BG2_ENABLE;
   sound_init();
+
   Player player = {93, 118, 5, 5, 100, 100};
-  Player player2 = {93, 118, 5, 5, 100, 100};
-
-  Player oldPlayer = player;
-  Player oldPlayer2 = player2;
-
   Shield shield = {93, 118, 9, SHIELD_UP, 1};
+
   int bulletCounter = 0;
   int switcher = 0;
   int switcher2 = 0;
   int switcher3 = 0;
   int switcher4 = 0;
 
-  u32 previousButtons = BUTTONS;
   u32 currentButtons = BUTTONS;
 
   ShieldDirection oldShieldDirection = SHIELD_UP;
-
   gba_state state = START;
 
   while (1)
   {
     waitForVBlank();
-
     currentButtons = BUTTONS;
-    oldPlayer = player;
-    oldPlayer2 = player2;
 
     switch (state)
     {
     case START:
-
-      player.health = 100;
-      bulletCounter = 0;
-      shield.active = 1;
-      bulletCounter = 0;
-
-      if (switcher2 == 0)
-      {
-        player2.col = 118;
-        player2.row = 93;
-
-        switcher2 = 1;
-      }
-      drawCenteredString(50, 72, 100, 10, "Press Start to Start", WHITE);
-      drawCenteredString(70, 72, 100, 10, "Survive 20 seconds ", WHITE);
-      drawCenteredString(90, 72, 100, 10, "To win", WHITE);
-
-      clearPlayer(&oldPlayer2);
-      updatePlayer(&player2, currentButtons);
-      drawImageDMA(player2.row, player2.col, player2.width, player2.height, character);
-
-      if (KEY_DOWN(BUTTON_START, currentButtons))
-      {
-        state = PLAY;
-        if (switcher)
-        {
-          switcher = 0;
-          switcher2 = 0;
-          switcher3 = 0;
-          switcher4 = 0;
-        }
-      }
-
+      handleStartState(&player, &shield, &bulletCounter, &switcher, &switcher2, &switcher3, &switcher4, &state, &currentButtons);
       break;
 
     case PLAY:
-      currentButtons = BUTTONS;
-      oldPlayer = player;
-
-      if (switcher == 0)
-      {
-        drawFullScreenImageDMA(background2);
-        drawBox();
-        drawUI();
-        drawButtons();
-        drawHealthBarBorder();
-        initBullets();
-        switcher = 1;
-      }
-
-      drawEnemy();
-
-      if (shield.active)
-      {
-        updateShield(&shield, currentButtons);
-      }
-      else
-      {
-        updatePlayer(&player, currentButtons);
-      }
-
-      updateBullets(&shield);
-
-      updateHealth(&player, &shield);
-
-      drawBox();
-
-      if (shield.active)
-      {
-        oldShieldDirection = drawShield(&shield, &player, oldShieldDirection);
-      }
-
-      bulletCounter++;
-
-      clearPlayer(&oldPlayer);
-      drawHealthBar(&player);
-      drawBullets();
-      drawImageDMA(player.row, player.col, player.width, player.height, character);
-
-      if (bulletCounter >= 1000)
-      {
-        shield.active = 0;
-        state = WIN;
-        fillScreenDMA(BLACK);
-      }
-
-      if (rand() % 50 == 0)
-      {
-        Direction dir = rand() % 4;
-        addBullet(dir, rand() % 2 + 1);
-      }
-
-      if (player.health <= 0)
-      {
-        state = LOSE;
-      }
-
+      handlePlayState(&player, &shield, &bulletCounter, &state, &currentButtons, &switcher, &oldShieldDirection);
       break;
+
     case WIN:
-
-      if (switcher4 == 0)
-      {
-        drawFullScreenImageDMA(background1);
-        drawCenteredString(70, 72, 100, 10, "Congratulations!", WHITE);
-        drawCenteredString(90, 72, 100, 10, "Press Start to Retry", WHITE);
-        switcher4 = 1;
-      }
-      if (KEY_DOWN(BUTTON_START, currentButtons))
-      {
-        state = START;
-        fillScreenDMA(BLACK);
-      }
+      handleWinState(&state, &currentButtons, &switcher4);
       break;
-    case LOSE:
 
-      if (switcher3 == 0)
-      {
-        drawFullScreenImageDMA(background1);
-        drawCenteredString(70, 72, 100, 10, "Game Over!", WHITE);
-        drawCenteredString(90, 72, 100, 10, "Press Start to Retry", WHITE);
-        switcher3 = 1;
-      }
-      if (KEY_DOWN(BUTTON_START, currentButtons))
-      {
-        state = START;
-        fillScreenDMA(BLACK);
-      }
+    case LOSE:
+      handleLoseState(&state, &currentButtons, &switcher3);
       break;
     }
 
@@ -195,13 +96,9 @@ int main(void)
     {
       state = START;
       fillScreenDMA(BLACK);
-      continue;
+      switcher = switcher2 = switcher3 = switcher4 = 0;
     }
-
-    previousButtons = currentButtons;
   }
-
-  UNUSED(previousButtons);
 
   return 0;
 }

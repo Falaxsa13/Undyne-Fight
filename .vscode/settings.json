@@ -18,6 +18,8 @@
         "utils.h": "c",
         "string.h": "c",
         "gbaui.h": "c",
-        "undyne.h": "c"
+        "undyne.h": "c",
+        "gamestatehandlers.h": "c",
+        "main.h": "c"
     }
 }

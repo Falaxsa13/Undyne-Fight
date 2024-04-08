@@ -2,6 +2,11 @@
 
 Bullet bullets[MAX_BULLETS];
 
+/**
+ * @brief Initializes the bullet array.
+ *
+ * Sets each bullet's state to inactive and assigns a default color.
+ */
 void initBullets(void)
 {
     for (int i = 0; i < MAX_BULLETS; i++)
@@ -11,6 +16,15 @@ void initBullets(void)
     }
 }
 
+/**
+ * @brief Adds a bullet to the game.
+ *
+ * Creates a new bullet with the specified direction and speed,
+ * and places it inside the game box at an appropriate starting position.
+ *
+ * @param dir Direction in which the bullet will travel (NORTH, SOUTH, EAST, WEST).
+ * @param speed Speed at which the bullet will move.
+ */
 void addBullet(Direction dir, int speed)
 {
     // Adjusted bullet initialization logic
@@ -50,6 +64,14 @@ void addBullet(Direction dir, int speed)
     }
 }
 
+/**
+ * @brief Clears a bullet from the screen.
+ *
+ * If the bullet is active, this function clears it from the screen by drawing
+ * a black rectangle over its current position.
+ *
+ * @param bullet Pointer to the bullet object to be cleared.
+ */
 void clearBullet(Bullet *bullet)
 {
     if (bullet->active)
@@ -59,6 +81,18 @@ void clearBullet(Bullet *bullet)
     }
 }
 
+/**
+ * @brief Updates the position of active bullets and handles collisions.
+ *
+ * This function iterates through the bullet array, updating the position
+ * of active bullets based on their direction and speed. It also checks for
+ * collisions with the shield and updates the bullet's state accordingly.
+ * If a bullet collides with the shield, it is deactivated and removed
+ * from the screen. Bullets that move beyond the screen boundaries are
+ * also deactivated.
+ *
+ * @param shield Pointer to the shield object.
+ */
 void updateBullets(Shield *shield)
 {
     for (int i = 0; i < MAX_BULLETS; i++)
@@ -105,6 +139,12 @@ void updateBullets(Shield *shield)
     }
 }
 
+/**
+ * @brief Draws active bullets on the screen.
+ *
+ * This function iterates through the bullet array and draws
+ * active bullets on the screen using DMA (Direct Memory Access).
+ */
 void drawBullets(void)
 {
     for (int i = 0; i < MAX_BULLETS; i++)
@@ -116,6 +156,15 @@ void drawBullets(void)
     }
 }
 
+/**
+ * @brief Checks for collision between a shield and a bullet.
+ *
+ * Determines if a bullet collides with a shield by comparing their positions.
+ *
+ * @param shield Pointer to the shield object.
+ * @param bullet Pointer to the bullet object.
+ * @return 1 if collision detected, 0 otherwise.
+ */
 int checkShieldCollision(Shield *shield, Bullet *bullet)
 {
     if (!bullet->active)
@@ -166,6 +215,15 @@ int checkShieldCollision(Shield *shield, Bullet *bullet)
     return 0; // No collision
 }
 
+/**
+ * @brief Updates the direction of the shield based on button input.
+ *
+ * Checks for button input to determine the direction in which the shield
+ * should move. Updates the shield's direction accordingly.
+ *
+ * @param shield Pointer to the shield object.
+ * @param currentButtons Current state of button input.
+ */
 void updateShield(Shield *shield, u32 currentButtons)
 {
     if (KEY_DOWN(BUTTON_UP, currentButtons))
@@ -186,6 +244,17 @@ void updateShield(Shield *shield, u32 currentButtons)
     }
 }
 
+/**
+ * @brief Draws the shield around the player and updates its direction.
+ *
+ * Draws the shield around the player based on its current direction.
+ * Clears the previous shield position and draws the new shield position.
+ *
+ * @param shield Pointer to the shield object.
+ * @param player Pointer to the player object.
+ * @param oldDirection Previous direction of the shield.
+ * @return The updated direction of the shield.
+ */
 ShieldDirection drawShield(Shield *shield, Player *player, ShieldDirection oldDirection)
 {
     // Assuming the shield is a line that rotates around the player
