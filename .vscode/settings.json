@@ -9,6 +9,12 @@
         "xutility": "c",
         "iosfwd": "c",
         "maincharacter.h": "c",
-        "bulldog.h": "c"
+        "bulldog.h": "c",
+        "gba.h": "c",
+        "shield.h": "c",
+        "background2.h": "c",
+        "character.h": "c",
+        "background1.h": "c",
+        "utils.h": "c"
     }
 }

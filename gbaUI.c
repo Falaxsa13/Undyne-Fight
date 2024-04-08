@@ -1,6 +1,5 @@
 #include "gbaUI.h"
 #include "gba.h"
-#include "main.h"
 
 #include "images/undyne.h"
 

@@ -47,8 +47,6 @@ void drawRectDMA(int row, int col, int width, int height, volatile u16 color)
   lcolor = color;
   for (int r = 0; r < height; r++)
   {
-    //              for(int c=0; c<width; c++)
-    //                      setPixel(row+r, col+c, color);
 
     DMA[3].src = &lcolor;
     DMA[3].dst = &videoBuffer[OFFSET(row + r, col, WIDTH)];
