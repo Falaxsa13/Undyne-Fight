@@ -1,14 +1,4 @@
-#include "main.h"
-
-void drawHealthBar(Player *p)
-{
-  if (p->health > 0)
-  {
-    drawRectDMA(HEALTH_BAR_Y, HEALTH_BAR_X, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT, HEALTH_BAR_LOW_COLOR);
-    int currentHealthWidth = (p->health * HEALTH_BAR_WIDTH) / p->maxHealth;
-    drawRectDMA(HEALTH_BAR_Y, HEALTH_BAR_X, currentHealthWidth, HEALTH_BAR_HEIGHT, HEALTH_BAR_FULL_COLOR);
-  }
-}
+#include "include/main.h"
 
 void updateHealth(Player *p, Shield *shield)
 {
@@ -22,6 +12,16 @@ void updateHealth(Player *p, Shield *shield)
       clearBullet(&bullets[i]);
       bullets[i].active = 0;
     }
+  }
+}
+
+void drawHealthBar(Player *p)
+{
+  if (p->health > 0)
+  {
+    drawRectDMA(HEALTH_BAR_Y, HEALTH_BAR_X, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT, HEALTH_BAR_LOW_COLOR);
+    int currentHealthWidth = (p->health * HEALTH_BAR_WIDTH) / p->maxHealth;
+    drawRectDMA(HEALTH_BAR_Y, HEALTH_BAR_X, currentHealthWidth, HEALTH_BAR_HEIGHT, HEALTH_BAR_FULL_COLOR);
   }
 }
 
@@ -52,6 +52,7 @@ int main(void)
 
   while (1)
   {
+    waitForVBlank();
 
     currentButtons = BUTTONS;
     oldPlayer = player;
@@ -93,8 +94,6 @@ int main(void)
         }
       }
 
-      waitForVBlank();
-
       break;
 
     case PLAY:
@@ -103,7 +102,6 @@ int main(void)
 
       if (switcher == 0)
       {
-        waitForVBlank();
         drawFullScreenImageDMA(background2);
         drawBox();
         drawUI();
@@ -112,8 +110,6 @@ int main(void)
         initBullets();
         switcher = 1;
       }
-
-      waitForVBlank();
 
       drawEnemy();
 
@@ -164,7 +160,7 @@ int main(void)
 
       break;
     case WIN:
-      waitForVBlank();
+
       if (switcher4 == 0)
       {
         drawFullScreenImageDMA(background1);
@@ -179,7 +175,7 @@ int main(void)
       }
       break;
     case LOSE:
-      waitForVBlank();
+
       if (switcher3 == 0)
       {
         drawFullScreenImageDMA(background1);

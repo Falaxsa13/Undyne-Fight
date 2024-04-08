@@ -15,6 +15,9 @@
         "background2.h": "c",
         "character.h": "c",
         "background1.h": "c",
-        "utils.h": "c"
+        "utils.h": "c",
+        "string.h": "c",
+        "gbaui.h": "c",
+        "undyne.h": "c"
     }
 }
